@@ -1,0 +1,68 @@
+server.host: "0.0.0.0"
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+elasticsearch.serviceAccountToken: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYTpsWGpudGhEY1RDNi0zVW5oR2w0OERR"
+# xpack.fleet.isAirGapped: true
+# real-epr
+xpack.fleet.registryUrl: "http://172.19.0.100:8080"
+# fake-epr
+# xpack.fleet.registryUrl: "http://172.19.0.101:80"
+# xpack.fleet.registryUrl: "http://nonexistent"
+
+################################################################################
+# Elasticsearch environments
+################################################################################
+
+# 3. Local ES (yarn es snapshot)
+# elasticsearch:
+  # username: 'kibana_system'
+  # password: 'changeme'
+  # hosts: 'http://localhost:9202'
+
+################################################################################
+# Misc Settings https://www.elastic.co/guide/en/kibana/current/settings.html
+################################################################################
+
+# Since 9.0 external calls to internal APIs are not allowed by default.
+# This setting allows this back.
+server.restrictInternalApis: false
+
+logging:
+  root:
+    appenders: [default]
+    level: warn
+  loggers:
+    - name: plugins.securitySolution
+      level: debug
+    - name: plugins.alerting
+      level: debug
+    # - name: plugins.ruleRegistry
+    # - name: plugins.taskManager
+    # - name: plugins.alerting
+    # - name: elasticsearch
+    # - name: elasticsearch.query
+    # - name: savedobjects-service
+    #   level: debug
+
+telemetry.allowChangingOptInStatus: true
+telemetry.enabled: false
+
+# Content Security Policy
+# These CSP settings are needed for the React Dev Tools to work in Firefox
+csp:
+  strict: false
+  warnLegacyBrowsers: false
+  script_src:
+    - 'unsafe-inline'
+
+xpack.security.encryptionKey: 'zHRu2&DMvE&bW9^DCLx4xV&V7iJeDz%b'
+xpack.encryptedSavedObjects.encryptionKey: '!D7^!pz%H#ev3MyZV*%vdJkN^XpxN2cc'
+
+uiSettings.overrides:
+  'bfetch:disableCompression': true
+
+# Detection Engine - Actions
+xpack.actions.allowedHosts: ['*', 'localhost', 'smtp.gmail.com']
+
+xpack.fleet.internal.registry.kibanaVersionCheckEnabled: false
+server.oas.enabled: true
+

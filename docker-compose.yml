@@ -1,0 +1,55 @@
+services:
+  
+  real-epr:
+    image: docker.elastic.co/package-registry/distribution:production
+    container_name: real-epr
+    ports:
+      - "8080:8080"
+    networks:
+      elastic-net:
+        ipv4_address: 172.19.0.100
+
+  fake-epr:
+    image: hashicorp/http-echo
+    container_name: fake-epr
+    command: ["-listen=:80", "-text=hello from fake epr"]
+    ports:
+      - "8081:80"
+    networks:
+      elastic-net:
+        ipv4_address: 172.19.0.101
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ELASTIC_PASSWORD=changeme
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./es-config/service_tokens:/usr/share/elasticsearch/config/service_tokens:ro
+    networks:
+      - elastic-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.0.0
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml
+    networks:
+      - elastic-net
+
+networks:
+  elastic-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/24
+          gateway: 172.19.0.1
+
